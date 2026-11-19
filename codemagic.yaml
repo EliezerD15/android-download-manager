@@ -6,6 +6,7 @@ workflows:
     scripts:
       - name: Build Android APK
         script: |
+          cd android-download-manager
           gradle :app:assembleDebug
     artifacts:
       - app/build/outputs/**/*.apk
