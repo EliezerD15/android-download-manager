@@ -3,10 +3,12 @@ workflows:
     name: Android Build
     max_build_duration: 60
     instance_type: mac_mini_m2
+    environment:
+      java: 17
     scripts:
       - name: Build Android APK
         script: |
           cd android-download-manager
           gradle :app:assembleDebug
     artifacts:
-      - app/build/outputs/**/*.apk
+      - android-download-manager/app/build/outputs/**/*.apk
