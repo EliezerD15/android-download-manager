@@ -51,18 +51,16 @@ class DownloadWorker(
                         "%(title)s - ${safeQuality(outputQuality(item))}.%(ext)s",
                     ).absolutePath,
                 )
-                addOption("--embed-thumbnail")
-                addOption("--convert-thumbnails", "jpg")
-                addOption("--embed-metadata")
-                addOption("--add-metadata")
                 if (item.kind == DownloadItem.KIND_VIDEO) {
                     addOption("-f", item.formatSelector)
-                    addOption("--merge-output-format", "mp4")
+                    addOption("--add-metadata")
                 } else {
                     addOption("-f", "bestaudio/best")
                     addOption("--extract-audio")
                     addOption("--audio-format", item.extension)
                     addOption("--audio-quality", item.formatSelector)
+                    addOption("--embed-thumbnail")
+                    addOption("--add-metadata")
                 }
             }
 
@@ -101,6 +99,13 @@ class DownloadWorker(
             val finalItem = item.copy(
                 status = DownloadItem.STATUS_COMPLETED,
                 progress = 100,
+                title = if (item.title == DownloadItem.DIRECT_DOWNLOAD_TITLE) {
+                    mediaFile.nameWithoutExtension.substringBeforeLast(" - ").trim()
+                        .ifBlank { item.title }
+                } else {
+                    item.title
+                },
+                extension = mediaFile.extension.lowercase(),
                 contentUri = published.contentUri,
                 localPath = published.localPath,
                 error = null,
@@ -133,7 +138,7 @@ class DownloadWorker(
 
             mediaFile.delete()
             workingDirectory.deleteRecursively()
-            DownloadNotifications.completed(applicationContext, item)
+            DownloadNotifications.completed(applicationContext, finalItem)
             Result.success()
         } catch (error: Exception) {
             if (isStopped) {

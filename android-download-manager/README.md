@@ -15,7 +15,7 @@ Desde esta carpeta, compila con `./gradlew :app:assembleDebug`. El wrapper desca
 - Interfaz nativa con Kotlin, Jetpack Compose y Material 3.
 - Recepción de enlaces desde el menú Compartir de Android.
 - Análisis de formatos y estimación de tamaño.
-- Descarga de video MP4 y extracción de audio MP3/M4A mediante yt-dlp y el FFmpeg incluido por la biblioteca.
+- Descarga del mejor formato de video disponible y extracción de audio MP3/M4A mediante yt-dlp y FFmpeg.
 - Metadatos y miniatura incrustados cuando la fuente los ofrece.
 - Descargas persistentes con WorkManager, progreso real y notificación de primer plano.
 - Guardado en `Download/Descargas LeonGO/Video` y `Download/Descargas LeonGO/Music` mediante MediaStore; compatibilidad con almacenamiento anterior a Android 10.

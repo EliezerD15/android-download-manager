@@ -33,6 +33,7 @@ data class DownloadItem(
 
         const val KIND_VIDEO = "video"
         const val KIND_AUDIO = "audio"
+        const val DIRECT_DOWNLOAD_TITLE = "Descarga directa"
     }
 }
 

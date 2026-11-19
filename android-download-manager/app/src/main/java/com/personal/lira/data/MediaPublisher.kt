@@ -16,10 +16,14 @@ object MediaPublisher {
         val audio = item.kind == DownloadItem.KIND_AUDIO
         val mediaFolder = if (audio) "Music" else "Video"
         val subfolder = "$DOWNLOADS_FOLDER/$mediaFolder"
-        val mimeType = when (item.extension.lowercase()) {
+        val mimeType = when (source.extension.lowercase()) {
             "mp3" -> "audio/mpeg"
             "m4a" -> "audio/mp4"
-            else -> "video/mp4"
+            "webm" -> if (audio) "audio/webm" else "video/webm"
+            "mkv" -> "video/x-matroska"
+            "opus" -> "audio/ogg"
+            "aac" -> "audio/aac"
+            else -> if (audio) "audio/mp4" else "video/mp4"
         }
         return publish(context, source, source.name, mimeType, subfolder)
     }

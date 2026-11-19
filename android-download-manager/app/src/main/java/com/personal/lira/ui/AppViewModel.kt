@@ -59,14 +59,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun analyze() {
-        val normalizedUrl = _uiState.value.url.trim()
-        val parsed = Uri.parse(normalizedUrl)
-        if (parsed.scheme !in setOf("http", "https") || parsed.host.isNullOrBlank()) {
-            _uiState.update {
-                it.copy(errorMessage = "Pega un enlace válido que empiece con http:// o https://.")
-            }
-            return
-        }
+        val normalizedUrl = validatedUrl() ?: return
         _uiState.update {
             it.copy(
                 isAnalyzing = true,
@@ -90,7 +83,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             } catch (_: TimeoutCancellationException) {
                 _uiState.update {
                     it.copy(
-                        errorMessage = "El análisis tardó demasiado. Revisa tu conexión e inténtalo de nuevo.",
+                        errorMessage = "No se pudieron consultar las calidades en 30 s. La descarga directa sigue disponible.",
                     )
                 }
             } catch (error: CancellationException) {
@@ -106,6 +99,22 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update { it.copy(isAnalyzing = false) }
             }
         }
+    }
+
+    fun startDirectVideoDownload(onQueued: () -> Unit) {
+        val normalizedUrl = validatedUrl() ?: return
+        val item = DownloadItem(
+            id = UUID.randomUUID().toString(),
+            url = normalizedUrl,
+            title = DownloadItem.DIRECT_DOWNLOAD_TITLE,
+            artist = "yt-dlp",
+            thumbnailUrl = null,
+            kind = DownloadItem.KIND_VIDEO,
+            quality = "Mejor calidad disponible",
+            formatSelector = "bestvideo+bestaudio/best",
+            extension = "auto",
+        )
+        enqueueDownload(item, onQueued)
     }
 
     fun selectOption(option: MediaOption) {
@@ -127,6 +136,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             formatSelector = option.formatSelector,
             extension = option.extension,
         )
+        enqueueDownload(item, onQueued)
+    }
+
+    private fun enqueueDownload(item: DownloadItem, onQueued: () -> Unit) {
         viewModelScope.launch {
             try {
                 repository.enqueue(item)
@@ -140,6 +153,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
+    }
+
+    private fun validatedUrl(): String? {
+        val normalizedUrl = _uiState.value.url.trim()
+        val parsed = Uri.parse(normalizedUrl)
+        if (parsed.scheme !in setOf("http", "https") || parsed.host.isNullOrBlank()) {
+            _uiState.update {
+                it.copy(errorMessage = "Pega un enlace válido que empiece con http:// o https://.")
+            }
+            return null
+        }
+        return normalizedUrl
     }
 
     fun cancelDownload(item: DownloadItem) {

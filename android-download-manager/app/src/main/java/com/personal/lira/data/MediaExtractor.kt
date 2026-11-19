@@ -22,8 +22,7 @@ class MediaExtractor {
         val videoOptions = listOf(144, 240, 360, 480, 720, 1080).map { height ->
             val video = formats
                 .filter {
-                    it.height in 1..height && it.vcodec != null && it.vcodec != "none" &&
-                        it.ext == "mp4"
+                    it.height in 1..height && it.vcodec != null && it.vcodec != "none"
                 }
                 .maxByOrNull { it.height }
             val videoSize = video?.estimatedSize()
@@ -33,22 +32,26 @@ class MediaExtractor {
                 label = "${height}p",
                 kind = DownloadItem.KIND_VIDEO,
                 quality = "${height}p",
-                extension = "mp4",
-                formatSelector = "bv*[height<=$height]+ba/b[height<=$height]",
+                extension = "auto",
+                formatSelector = "bestvideo[height<=$height]+bestaudio/best[height<=$height]",
                 estimatedBytes = sumKnownSizes(videoSize, audioSize),
             )
-        } + MediaOption(
+        }
+        val bestVideo = formats
+            .filter { it.vcodec != null && it.vcodec != "none" }
+            .maxByOrNull { it.height }
+        val maxVideoSize = bestVideo?.estimatedSize()
+        val maxAudioSize = if (bestVideo?.acodec == "none") bestAudio?.estimatedSize() else null
+        val maximumVideoOption = MediaOption(
             id = "video_max",
             label = "Máxima",
             kind = DownloadItem.KIND_VIDEO,
             quality = "Máxima",
-            extension = "mp4",
-            formatSelector = "bv*+ba/b",
-            estimatedBytes = formats
-                .filter { it.vcodec != null && it.vcodec != "none" && it.ext == "mp4" }
-                .maxByOrNull { it.height }
-                ?.estimatedSize(),
+            extension = "auto",
+            formatSelector = "bestvideo+bestaudio/best",
+            estimatedBytes = sumKnownSizes(maxVideoSize, maxAudioSize),
         )
+        val allVideoOptions = videoOptions + maximumVideoOption
 
         val audioOptions = listOf(
             Triple("mp3_128", "MP3 · 128 kbps", "128K"),
@@ -80,7 +83,7 @@ class MediaExtractor {
             artist = info.uploader?.takeIf(String::isNotBlank) ?: "Artista desconocido",
             durationSeconds = info.duration,
             thumbnailUrl = info.thumbnail,
-            options = videoOptions + audioOptions,
+            options = allVideoOptions + audioOptions,
         )
     }
 

@@ -24,6 +24,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -110,6 +111,15 @@ fun HomeScreen(
                 }
             }
         }
+        item {
+            OutlinedButton(
+                onClick = { viewModel.startDirectVideoDownload(onDownloadStarted) },
+                enabled = state.url.isNotBlank(),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Descargar video directo · mejor calidad")
+            }
+        }
         state.errorMessage?.let { message ->
             item {
                 Card(
@@ -129,7 +139,7 @@ fun HomeScreen(
         }
         if (media != null) {
             item { MediaSummary(media) }
-            item { OptionHeading("VIDEO", "MP4", Icons.Outlined.Movie) }
+            item { OptionHeading("VIDEO", "Mejor formato disponible", Icons.Outlined.Movie) }
             items(media.options.filter { it.kind == DownloadItem.KIND_VIDEO }) { option ->
                 OptionRow(
                     option = option,

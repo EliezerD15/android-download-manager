@@ -63,8 +63,13 @@ fun PlayerDetailScreen(
             )
             Text(item.title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text(item.artist, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            val extensionLabel = if (item.extension == "auto") {
+                "Formato automático"
+            } else {
+                item.extension.uppercase()
+            }
             Text(
-                "${item.quality} · ${item.extension.uppercase()}",
+                "${item.quality} · $extensionLabel",
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.labelLarge,
             )
