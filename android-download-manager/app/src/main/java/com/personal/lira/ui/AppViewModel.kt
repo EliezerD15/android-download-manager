@@ -70,7 +70,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
         viewModelScope.launch {
             try {
-                val result = withTimeout(30_000L) {
+                val result = withTimeout(120_000L) {
                     extractor.analyze(normalizedUrl)
                 }
                 _uiState.update {
@@ -83,7 +83,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             } catch (_: TimeoutCancellationException) {
                 _uiState.update {
                     it.copy(
-                        errorMessage = "No se pudieron consultar las calidades en 30 s. La descarga directa sigue disponible.",
+                        errorMessage = "yt-dlp no terminó de prepararse o analizar en 2 min. La descarga directa sigue disponible.",
                     )
                 }
             } catch (error: CancellationException) {
