@@ -70,8 +70,8 @@ dependencies {
 
     // The library moved from JitPack to Maven Central; the companion module
     // provides the FFmpeg binary used by yt-dlp post-processing.
-    implementation("io.github.junkfood02.youtubedl-android:library:0.18.1")
-    implementation("io.github.junkfood02.youtubedl-android:ffmpeg:0.18.1")
+    implementation("io.github.deniscerri.youtubedl-android:library:0.19.0")
+    implementation("io.github.deniscerri.youtubedl-android:ffmpeg:0.19.0")
 }
 
 kapt {

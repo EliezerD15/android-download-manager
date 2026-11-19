@@ -14,7 +14,8 @@ data class PublishedFile(val contentUri: String?, val localPath: String?)
 object MediaPublisher {
     fun publishMedia(context: Context, source: File, item: DownloadItem): PublishedFile {
         val audio = item.kind == DownloadItem.KIND_AUDIO
-        val subfolder = if (audio) "Music" else "Movies"
+        val mediaFolder = if (audio) "Music" else "Video"
+        val subfolder = "$DOWNLOADS_FOLDER/$mediaFolder"
         val mimeType = when (item.extension.lowercase()) {
             "mp3" -> "audio/mpeg"
             "m4a" -> "audio/mp4"
@@ -24,7 +25,7 @@ object MediaPublisher {
     }
 
     fun publishLyrics(context: Context, source: File, displayName: String): PublishedFile =
-        publish(context, source, displayName, "text/plain", "Music")
+        publish(context, source, displayName, "text/plain", "$DOWNLOADS_FOLDER/Music")
 
     private fun publish(
         context: Context,
@@ -80,4 +81,6 @@ object MediaPublisher {
             throw error
         }
     }
+
+    private const val DOWNLOADS_FOLDER = "Descargas LeonGO"
 }

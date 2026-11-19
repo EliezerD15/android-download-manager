@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Lira"
+rootProject.name = "LeonGO"
 include(":app")

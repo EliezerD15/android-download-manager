@@ -9,12 +9,15 @@ import com.personal.lira.data.DownloadRepository
 import com.personal.lira.data.MediaDetails
 import com.personal.lira.data.MediaExtractor
 import com.personal.lira.data.MediaOption
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import java.util.UUID
 
 data class AppUiState(
@@ -74,7 +77,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
         viewModelScope.launch {
             try {
-                val result = extractor.analyze(normalizedUrl)
+                val result = withTimeout(30_000L) {
+                    extractor.analyze(normalizedUrl)
+                }
                 _uiState.update {
                     it.copy(
                         media = result,
@@ -82,6 +87,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                             ?: result.options.firstOrNull(),
                     )
                 }
+            } catch (_: TimeoutCancellationException) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "El análisis tardó demasiado. Revisa tu conexión e inténtalo de nuevo.",
+                    )
+                }
+            } catch (error: CancellationException) {
+                throw error
             } catch (error: Exception) {
                 _uiState.update {
                     it.copy(

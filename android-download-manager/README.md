@@ -1,4 +1,4 @@
-# Lira — Android nativo
+# LeonGO — Android nativo
 
 Proyecto Android Studio para analizar enlaces multimedia, seleccionar una calidad y administrar descargas en segundo plano.
 
@@ -8,7 +8,7 @@ Proyecto Android Studio para analizar enlaces multimedia, seleccionar una calida
 - Android SDK 35
 - Android 7.0 o superior (minSdk 24)
 
-Abre esta carpeta en Android Studio y permite que Gradle sincronice las dependencias. La app apunta a Android 14 (targetSdk 34).
+Desde esta carpeta, compila con `./gradlew :app:assembleDebug`. El wrapper descarga Gradle 8.9 automáticamente; se requiere JDK 17 y Android SDK 35. La app apunta a Android 14 (targetSdk 34).
 
 ## Funciones incluidas
 
@@ -18,7 +18,7 @@ Abre esta carpeta en Android Studio y permite que Gradle sincronice las dependen
 - Descarga de video MP4 y extracción de audio MP3/M4A mediante yt-dlp y el FFmpeg incluido por la biblioteca.
 - Metadatos y miniatura incrustados cuando la fuente los ofrece.
 - Descargas persistentes con WorkManager, progreso real y notificación de primer plano.
-- Guardado en `Download/Movies` o `Download/Music` mediante MediaStore; compatibilidad con almacenamiento anterior a Android 10.
+- Guardado en `Download/Descargas LeonGO/Video` y `Download/Descargas LeonGO/Music` mediante MediaStore; compatibilidad con almacenamiento anterior a Android 10.
 - Búsqueda de letras en LRCLIB y archivo `.lrc` junto al audio si existe una coincidencia.
 
 ## Dependencias importantes
