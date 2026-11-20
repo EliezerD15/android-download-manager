@@ -11,4 +11,4 @@ workflows:
           cd android-download-manager
           gradle :app:assembleDebug
     artifacts:
-      - app/build/outputs/**/*.apk
+      - android-download-manager/app/build/outputs/**/*.apk
