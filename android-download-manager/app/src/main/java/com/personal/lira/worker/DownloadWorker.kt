@@ -149,17 +149,6 @@ class DownloadWorker(
         }
     }
 
-    override fun onStopped() {
-        inputData.getString(KEY_DOWNLOAD_ID)?.let { id ->
-            try {
-                YoutubeDL.getInstance().destroyProcessById(id)
-            } catch (_: Exception) {
-                // The media runtime may not have finished initializing yet.
-            }
-        }
-        super.onStopped()
-    }
-
     private fun outputQuality(item: DownloadItem): String =
         if (item.kind == DownloadItem.KIND_AUDIO) {
             "${item.extension.uppercase()}_${item.formatSelector}"
